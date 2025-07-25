@@ -1,7 +1,8 @@
 module Api
   module V1
     class CartsController < ApplicationController
-      before_action :set_cart, only: [:show, :update, :destroy]
+      before_action :set_cart, only: [:show]
+      before_action :set_cart_for_items, only: [:add_item, :update_item, :remove_item, :clear]
 
       # GET /api/v1/cart
       def show
@@ -10,7 +11,6 @@ module Api
 
       # POST /api/v1/cart/items
       def add_item
-        @cart = current_user.cart || current_user.create_cart
         @cart_item = @cart.cart_items.find_or_initialize_by(product_id: cart_item_params[:product_id])
         
         if @cart_item.persisted?
@@ -28,7 +28,6 @@ module Api
 
       # PATCH /api/v1/cart/items/:id
       def update_item
-        @cart = current_user.cart
         @cart_item = @cart.cart_items.find_by(id: params[:id])
         
         if @cart_item.update(cart_item_params)
@@ -40,7 +39,6 @@ module Api
 
       # DELETE /api/v1/cart/items/:id
       def remove_item
-        @cart = current_user.cart
         @cart_item = @cart.cart_items.find_by(id: params[:id])
         
         if @cart_item&.destroy
@@ -52,7 +50,6 @@ module Api
 
       # DELETE /api/v1/cart/clear
       def clear
-        @cart = current_user.cart
         @cart.cart_items.destroy_all
         
         render json: { message: 'Cart cleared successfully' }, status: :ok
@@ -61,6 +58,10 @@ module Api
       private
 
       def set_cart
+        @cart = current_user.cart || current_user.create_cart
+      end
+      
+      def set_cart_for_items
         @cart = current_user.cart || current_user.create_cart
       end
 
