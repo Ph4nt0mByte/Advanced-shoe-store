@@ -432,60 +432,21 @@ html {
 
 .slideshow-track {
     display: flex;
-    gap: 0;
-    padding: 40px 0;
-    transition: transform 0.8s ease-in-out;
-    width: 600%; /* 6 slides * 100% */
+    gap: 20px;
+    padding: 40px 20px;
     will-change: transform;
-    opacity: 0;
-    transition: transform 0.8s ease-in-out, opacity 0.5s ease-in-out;
 }
 
-.slideshow-track.loaded {
-    opacity: 1;
-}
 
-/* Loading state */
-.slideshow-loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-    z-index: 10;
-}
-
-.loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top: 3px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 15px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
 
 .slides {
-    min-width: 100%;
-    flex: 0 0 100%;
+    min-width: 300px;
+    flex: 0 0 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
 }
 
 .slides:hover {
@@ -497,34 +458,32 @@ html {
 @media (max-width: 900px) {
     .slideshow-container {
         margin: 10px;
-        max-width: 100%;
     }
     
     .slideshow-track {
-        padding: 20px 0;
-        width: 600%;
+        padding: 20px 10px;
+        gap: 15px;
     }
     
     .slides {
-        min-width: 100%;
-        flex: 0 0 100%;
+        min-width: 250px;
+        flex: 0 0 250px;
     }
 }
 
 @media (max-width: 600px) {
     .slideshow-container {
         margin: 5px;
-        max-width: 100%;
     }
     
     .slideshow-track {
-        padding: 15px 0;
-        width: 600%;
+        padding: 15px 5px;
+        gap: 10px;
     }
     
     .slides {
-        min-width: 100%;
-        flex: 0 0 100%;
+        min-width: 200px;
+        flex: 0 0 200px;
     }
     
     .slides img {
@@ -536,17 +495,16 @@ html {
 @media (max-width: 480px) {
     .slideshow-container {
         margin: 0;
-        max-width: 100%;
     }
     
     .slideshow-track {
-        padding: 10px 0;
-        width: 600%;
+        padding: 10px 5px;
+        gap: 8px;
     }
     
     .slides {
-        min-width: 100%;
-        flex: 0 0 100%;
+        min-width: 150px;
+        flex: 0 0 150px;
     }
     
     .slides img {
