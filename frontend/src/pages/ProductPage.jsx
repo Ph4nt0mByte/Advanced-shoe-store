@@ -36,28 +36,20 @@ function ProductPage() {
   // Load products from backend
   const loadProducts = async () => {
     try {
-      const response = await fetch('/api/products'); // Update this to your actual API endpoint
+      const response = await fetch('http://localhost:3000/api/v1/products');
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }
       
       const data = await response.json();
       
-      const processedProducts = data.map((product, index) => ({
+      const processedProducts = data.map((product) => ({
         id: product.id,
         name: product.name,
-        brand: product.name.toLowerCase().includes('jordan') ? 'jordan' : 
-               product.name.toLowerCase().includes('nike') ? 'nike' :
-               product.name.toLowerCase().includes('adidas') ? 'adidas' :
-               product.name.toLowerCase().includes('puma') ? 'puma' :
-               product.name.toLowerCase().includes('converse') ? 'converse' :
-               product.name.toLowerCase().includes('salomon') ? 'salomon' :
-               product.name.toLowerCase().includes('vans') ? 'vans' : 'other',
+        brand: product.brand || 'other',
         price: parseFloat(product.price),
-        category: product.name.toLowerCase().includes('air') ? 'basketball' :
-                 product.name.toLowerCase().includes('ultraboost') ? 'running' :
-                 product.name.toLowerCase().includes('skate') ? 'skate' : 'casual',
-        images: [product.image],
+        category: product.category || 'casual',
+        images: [product.image_url || 'https://via.placeholder.com/300'],
         description: product.description || 'No description available',
         sizes: ["7", "8", "9", "10", "11", "12"],
         colors: ["#000000", "#FFFFFF", "#FF0000"]
@@ -67,44 +59,8 @@ function ProductPage() {
       setFilteredProducts(processedProducts);
     } catch (error) {
       console.error('Error loading products:', error);
-      // For demo purposes, let's create some sample products
-      const sampleProducts = [
-        {
-          id: 1,
-          name: "Nike Air Jordan 1",
-          brand: "jordan",
-          price: 180,
-          category: "basketball",
-          images: ["https://cdn-images.farfetch-contents.com/22/19/20/86/22192086_51955423_1000.jpg"],
-          description: "Classic basketball sneaker with premium leather construction",
-          sizes: ["7", "8", "9", "10", "11", "12"],
-          colors: ["#000000", "#FFFFFF", "#FF0000"]
-        },
-        {
-          id: 2,
-          name: "Adidas Ultraboost 22",
-          brand: "adidas",
-          price: 190,
-          category: "running",
-          images: ["https://cdn-images.farfetch-contents.com/20/49/94/58/20499458_50484173_1000.jpg"],
-          description: "Premium running shoe with responsive cushioning",
-          sizes: ["7", "8", "9", "10", "11", "12"],
-          colors: ["#000000", "#FFFFFF", "#FF0000"]
-        },
-        {
-          id: 3,
-          name: "Nike Air Max 270",
-          brand: "nike",
-          price: 150,
-          category: "casual",
-          images: ["https://cdn-images.farfetch-contents.com/30/04/81/66/30048166_59098074_1000.jpg"],
-          description: "Comfortable everyday sneaker with Air Max technology",
-          sizes: ["7", "8", "9", "10", "11", "12"],
-          colors: ["#000000", "#FFFFFF", "#FF0000"]
-        }
-      ];
-      setProducts(sampleProducts);
-      setFilteredProducts(sampleProducts);
+      // Show error to user
+      alert('Failed to load products. Please try again later.');
     }
   };
 
