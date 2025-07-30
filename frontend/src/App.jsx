@@ -6,6 +6,7 @@ import AddProductPage from './pages/add';
 import EditProductPage from './pages/edit';
 import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/login';
+import CheckoutPage from './pages/checkout';
 import './styles/App.css';
 
 // Simple route guard
@@ -46,6 +47,11 @@ function App() {
           <Route path="/edit/:id" element={
             <ProtectedRoute>
               <EditProductPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/checkout" element={
+            <ProtectedRoute>
+              <CheckoutPage />
             </ProtectedRoute>
           } />
         </Routes>

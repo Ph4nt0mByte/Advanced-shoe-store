@@ -33,18 +33,18 @@ function CheckoutPage() {
             <a href="/#footer-section" className="nav-link">ABOUT US</a>
           </div>
           <div className="nav-center">
-            <img src="/img/logo.png" alt="SHOE STORE" className="logo" />
+            <img src="/homepage/img/logo.png" alt="SHOE STORE" className="logo" />
           </div>
           <div className="nav-right">
             <a href="/#contact-section" className="nav-link">CONTACT</a>
             <Link to="/cart" className="cart-icon">
-              <img src="/img/cart.svg" alt="Shopping Cart" className="cart-img" />
+              <img src="/homepage/img/cart.svg" alt="Shopping Cart" className="cart-img" />
               <span className="cart-count">{summary.itemCount}</span>
             </Link>
           </div>
         </div>
         <button className="hamburger" onClick={toggleMenu} aria-label="Toggle menu">
-          <img className="menu" src="/img/Menu.svg" alt="Menu" />
+          <img className="menu" src="/homepage/img/Menu.svg" alt="Menu" />
         </button>
         <div className={`mobile-menu ${mobileMenuOpen ? 'active' : ''}`} id="mobileMenu">
           <span className="close-btn" onClick={toggleMenu}><i className="fas fa-times"></i></span>
@@ -61,7 +61,7 @@ function CheckoutPage() {
         <div className="checkout-container">
           <h1 className="checkout-title">Checkout</h1>
           <div className="checkout-content">
-            <form className="checkout-form" id="checkoutForm">
+            <form className="checkout-form" id="checkoutForm" onSubmit={handleSubmit}>
               <div className="form-section">
                 <h2>Customer Information</h2>
                 <div className="form-group">
