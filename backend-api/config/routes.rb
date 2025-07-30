@@ -13,7 +13,10 @@ Rails.application.routes.draw do
       post 'auth/register', to: 'auth#register'
       get 'auth/me', to: 'auth#me'
       
-      resources :products, only: [:index, :show, :create, :update, :destroy]
+      resources :products, only: [:index, :show, :create, :update, :destroy] do
+        post 'restore', on: :member
+        get 'deleted', on: :collection
+      end
       
       # Cart routes
       resource :cart, only: [:show] do

@@ -24,21 +24,31 @@ const LoginPage = () => {
     const { email, password } = formData;
     
     try {
-      // Replace with your actual login API call
       const response = await fetch('http://localhost:3000/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
       
-      if (!response.ok) throw new Error('Login failed');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Login failed');
+      }
       
       const data = await response.json();
       localStorage.setItem('token', data.token);
-      navigate('/home');
+      
+      // Check if user is admin and redirect accordingly
+      if (data.user && data.user.admin) {
+        localStorage.setItem('isAdmin', 'true');
+        navigate('/admin');
+      } else {
+        localStorage.removeItem('isAdmin');
+        navigate('/home');
+      }
     } catch (error) {
       console.error('Login error:', error);
-      alert('Login failed. Please check your credentials.');
+      alert(error.message || 'Login failed. Please check your credentials.');
     }
   };
 

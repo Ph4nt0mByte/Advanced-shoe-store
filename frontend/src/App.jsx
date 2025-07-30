@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import HomePage from './pages/HomePage';
 import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
-import LoginPage from './pages/login';
-import ManageProductsPage from './pages/delete';
 import AddProductPage from './pages/add';
 import EditProductPage from './pages/edit';
+import AdminPage from './pages/AdminPage';
+import LoginPage from './pages/login';
+import './styles/App.css';
 
-// Simple route guard - replace with your auth logic
+// Simple route guard
 const isAuthenticated = () => {
   return !!localStorage.getItem('token');
 };
@@ -16,7 +16,6 @@ const isAuthenticated = () => {
 const ProtectedRoute = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/" replace />;
 };
-import './styles/App.css';
 
 function App() {
   return (
@@ -24,11 +23,6 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          <Route path="/home" element={
-            <ProtectedRoute>
-              <HomePage />
-            </ProtectedRoute>
-          } />
           <Route path="/products" element={
             <ProtectedRoute>
               <ProductPage />
@@ -41,7 +35,7 @@ function App() {
           } />
           <Route path="/admin" element={
             <ProtectedRoute>
-              <ManageProductsPage />
+              <AdminPage />
             </ProtectedRoute>
           } />
           <Route path="/add" element={

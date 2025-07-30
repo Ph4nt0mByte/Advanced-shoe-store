@@ -1,9 +1,9 @@
 module Api
     module V1
       class ProductsController < ApplicationController
-        skip_before_action :authenticate_request, only: [:index, :show]
-        before_action :set_product, only: [:show, :update, :destroy]
-        before_action :authorize_admin, only: [:create, :update, :destroy]
+        skip_before_action :authenticate_request, only: [:index, :show, :deleted]
+        before_action :set_product, only: [:show, :update, :destroy, :restore]
+        before_action :authorize_admin, only: [:create, :update, :destroy, :restore, :deleted]
   
         def index
           @products = Product.all
@@ -37,12 +37,27 @@ module Api
         end
   
         def destroy
-          if @product.order_items.any?
-            render json: { errors: ['Cannot delete product with existing orders'] }, status: :unprocessable_entity
+          if @product.soft_delete
+            render json: { message: 'Product has been soft deleted' }, status: :ok
           else
-            @product.destroy
-            head :no_content
+            render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
           end
+        end
+  
+        def restore
+          @product = Product.only_deleted.find(params[:id])
+          if @product.restore
+            render json: @product, status: :ok
+          else
+            render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
+          end
+        rescue ActiveRecord::RecordNotFound
+          render json: { error: 'Deleted product not found' }, status: :not_found
+        end
+  
+        def deleted
+          @products = Product.only_deleted
+          render json: @products
         end
   
         private
@@ -54,7 +69,16 @@ module Api
         end
   
         def product_params
-          params.require(:product).permit(:name, :description, :price, :image)
+          params.require(:product).permit(
+            :name, 
+            :description, 
+            :price, 
+            :image,  # Using 'image' instead of 'image_url' to match the database column
+            :brand, 
+            :category,
+            sizes: [],
+            colors: []
+          )
         end
       end
     end

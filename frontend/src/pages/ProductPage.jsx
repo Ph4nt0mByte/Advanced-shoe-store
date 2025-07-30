@@ -42,19 +42,38 @@ function ProductPage() {
       }
       
       const data = await response.json();
+      console.log('Raw API response:', data); // Debug log
       
-      const processedProducts = data.map((product) => ({
-        id: product.id,
-        name: product.name,
-        brand: product.brand || 'other',
-        price: parseFloat(product.price),
-        category: product.category || 'casual',
-        images: [product.image_url || 'https://via.placeholder.com/300'],
-        description: product.description || 'No description available',
-        sizes: ["7", "8", "9", "10", "11", "12"],
-        colors: ["#000000", "#FFFFFF", "#FF0000"]
-      }));
+      const processedProducts = data.map((product) => {
+        // Debug log to see what fields are available
+        console.log('Product data:', {
+          id: product.id,
+          name: product.name,
+          image: product.image,
+          image_url: product.image_url,
+          allFields: Object.keys(product)
+        });
+        
+        // Try to find the image URL in common field names
+        const imageUrl = product.image || 
+                        product.image_url || 
+                        product.images?.[0] || 
+                        'https://via.placeholder.com/300';
+        
+        return {
+          id: product.id,
+          name: product.name,
+          brand: product.brand || 'other',
+          price: parseFloat(product.price),
+          category: product.category || 'casual',
+          images: [imageUrl],
+          description: product.description || 'No description available',
+          sizes: Array.isArray(product.sizes) ? product.sizes : ["7", "8", "9", "10", "11", "12"],
+          colors: Array.isArray(product.colors) ? product.colors : ["#000000", "#FFFFFF", "#FF0000"]
+        };
+      });
       
+      console.log('Processed products:', processedProducts);
       setProducts(processedProducts);
       setFilteredProducts(processedProducts);
     } catch (error) {
@@ -316,7 +335,15 @@ function ProductPage() {
                     src={product.images[0]} 
                     alt={product.name} 
                     onError={(e) => {
-                      e.target.src = `https://via.placeholder.com/250x200?text=${product.name}`;
+                      console.error('Error loading image:', product.images[0]);
+                      e.target.onerror = null; // Prevent infinite loop if placeholder also fails
+                      e.target.src = `https://via.placeholder.com/250x200?text=${encodeURIComponent(product.name)}`;
+                    }}
+                    style={{ 
+                      width: '100%', 
+                      height: '200px', 
+                      objectFit: 'cover',
+                      borderRadius: '8px'
                     }}
                   />
                 </div>
