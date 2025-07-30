@@ -7,6 +7,7 @@ import EditProductPage from './pages/edit';
 import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/login';
 import CheckoutPage from './pages/checkout';
+import Homepage from './pages/HomePage';
 import './styles/App.css';
 
 // Simple route guard
@@ -52,6 +53,11 @@ function App() {
           <Route path="/checkout" element={
             <ProtectedRoute>
               <CheckoutPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/home" element={
+            <ProtectedRoute>
+              <Homepage />
             </ProtectedRoute>
           } />
         </Routes>
