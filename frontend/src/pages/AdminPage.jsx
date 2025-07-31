@@ -12,7 +12,7 @@ function AdminPage() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('isAdmin');
-    navigate('/login');
+    navigate('/');
   };
 
   // Redirect to home if not admin

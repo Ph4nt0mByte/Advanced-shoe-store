@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { addToCart, getCartItemCount } from '../utils/cart';
 import '../styles/ProductPage.css';
+import '../pages/HomePage';
 
 function ProductPage() {
   // State management
@@ -247,13 +248,13 @@ function ProductPage() {
           </div>
 
           <div className="nav-center">
-            <Link to="/">
+            <Link to="/home">
               <img src="/productpage/img/logo.png" alt="SHODES" className="logo" />
             </Link>
           </div>
 
           <div className="nav-right">
-            <a href="/#contact-section" className="nav-link">CONTACT</a>
+            <a href="/home#contact-section" className="nav-link">CONTACT</a>
             <Link to="/cart" className="cart-icon">
               <img src="/productpage/img/cart.svg" alt="Shopping Cart" className="cart-img" />
               <span className={`cart-count ${cartCount > 0 ? 'show' : ''}`}>{cartCount}</span>

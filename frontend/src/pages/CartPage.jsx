@@ -8,6 +8,7 @@ import {
   getOrderSummary,
   subscribe
 } from '../utils/cart';
+import '../pages/HomePage';
 
 function CartPage() {
   const [cartItems, setCartItems] = useState(getCartItems());
@@ -118,11 +119,13 @@ function CartPage() {
             </div>
 
             <div className="nav-center">
-              <img src="/cartpage/img/logo.png" alt="SHODES" className="logo" />
+              <Link to="/home">
+                <img src="/cartpage/img/logo.png" alt="SHODES" className="logo" />
+              </Link>
             </div>
 
             <div className="nav-right">
-              <Link to="/#contact-section" className="nav-link">CONTACT</Link>
+              <Link to="/home#contact-section" className="nav-link">CONTACT</Link>
               <Link to="/cart" className="cart-icon">
                 <img src="/cartpage/img/cart.svg" alt="Shopping Cart" className="cart-img" />
                 <span className="cart-count" id="cartCount">{cartItems.length}</span>

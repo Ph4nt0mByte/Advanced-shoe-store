@@ -435,6 +435,7 @@ html {
 .cart-container {
     max-width: 1200px;
     margin: 0 auto;
+    margin-top: 80px;
 }
 
 .cart-title {
