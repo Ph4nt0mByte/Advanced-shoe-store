@@ -1,7 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap');
+
+/* CSS Reset - Remove all default margins and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global styles */
 html, body {
     max-width: 100%;
     overflow-x: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -11,16 +22,38 @@ body {
     background-color: #131313;
 }
 
+/* Home page specific styles */
+.home-page {
+    width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove default spacing from common elements */
+h1, h2, h3, h4, h5, h6, p, ul, li, a, img, video {
+    margin: 0;
+    padding: 0;
+}
+
+/* Ensure sections don't have unwanted spacing */
+section {
+    margin: 0;
+    padding: 0;
+}
+
 html {
     scroll-behavior: smooth;
 }
-.navigation{
+.navigation {
     position: absolute;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 10; 
+    z-index: 10;
+    margin: 0;
+    padding: 0;
 }
 .navbar {
     padding: 5px 30px;
@@ -28,6 +61,7 @@ html {
     width: 100%;
     justify-content: space-between;
     align-items: center;
+    margin: 0;
 }
 
   .nav-right {
@@ -153,7 +187,8 @@ html {
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    backdrop-filter: blur(10px);
   }
 
   .mobile-menu.active {
@@ -193,15 +228,26 @@ html {
     cursor: pointer;
   }
 
-  /* Responsive */
+  /* Responsive Navigation */
   @media (max-width: 1100px) {
     .nav-left,
-    .nav-right,
+    .nav-right {
+      gap: 30px;
+    }
+    
     .nav-link {
-      gap: 50px;
-      flex: 0%;
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .nav-left,
+    .nav-right {
+      gap: 20px;
+    }
+    
+    .nav-link {
       font-size: 13px;
-      transition: .5s;
     }
   }
 
@@ -212,11 +258,11 @@ html {
       left: 20px;
       top: 50%;
       transform: translateY(-50%);
+      z-index: 1001;
     }
 
     .nav-left {
       display: none;
-      transition: .5s;
     }
 
     .nav-right {
@@ -225,12 +271,11 @@ html {
       right: 20px;
       top: 50%;
       transform: translateY(-50%);
-      gap: 25px;
+      gap: 15px;
     }
 
     .nav-right .nav-link {
       display: none;
-      transition: .5s;
     }
 
     .logo {
@@ -244,15 +289,20 @@ html {
       position: relative;
       height: 70px;
     }
+  }
 
-    .left-text {
-      top: 15%;
-      font-size: 2rem;
+  @media (max-width: 480px) {
+    .hamburger {
+      left: 15px;
     }
 
-    .right-text {
-      bottom: 15%;
-      font-size: 2rem;
+    .nav-right {
+      right: 15px;
+      gap: 10px;
+    }
+
+    .logo {
+      height: 6vh;
     }
   }
 
@@ -262,6 +312,8 @@ html {
     height: 100vh;
     width: 100%;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 .backgroundVideo {
@@ -277,7 +329,7 @@ html {
 
 .left-text{
     position: absolute;
-    top: 35%;
+    top: 45%;
     left: 2%;
     text-align: left;
     background: linear-gradient(180deg, #FFF 0%, rgba(153, 153, 153, 0.00) 99%);
@@ -285,7 +337,7 @@ html {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-family: 'Inter', sans-serif;
-    font-size: 300%;
+    font-size: 1.5rem;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -293,7 +345,7 @@ html {
 }
 .right-text{
     position: absolute;
-    top: 35%;
+    top: 45%;
     right: 2%;
     text-align: right;
     background: linear-gradient(180deg, #FFF 0%, rgba(153, 153, 153, 0.00) 99%);
@@ -301,7 +353,7 @@ html {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-family: 'Inter', sans-serif;
-    font-size: 300%;
+    font-size: 1.5rem;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -313,7 +365,7 @@ html {
 @media (max-width: 1300px) {
     .left-text,
     .right-text{
-        font-size: 200%;
+        font-size: 1.5rem;
         transition: 1s;
     }
 }
@@ -328,7 +380,7 @@ html {
         padding: 0 15px;
         box-sizing: border-box;
         display: block;
-        font-size: 200%;
+        font-size: 1.54rem;
     }
 
     .right-text {
@@ -340,13 +392,16 @@ html {
         padding: 0 15px;
         box-sizing: border-box;
         display: block;
-        font-size: 200%;
+        font-size: 1.5rem;
     }
 }
 
 @media (max-width: 440px){
+    .left-text{
+        font-size: 1.4rem;
+    }
     .right-text{
-        font-size: 180%;
+        font-size: 1.4rem;
     }
 }
 
@@ -355,6 +410,7 @@ html {
     padding: 30px;
     background-color: #131313;
     z-index: 2;
+    margin: 0;
 }
 
 .featured-header {
@@ -367,28 +423,69 @@ html {
 }
 
 .slideshow-container {
-    max-width: 2000px;
-    margin: 20px auto;
+    max-width: 1200px;
+    margin: 40px auto 200px auto;
     position: relative;
     overflow: hidden;
-    margin-top: 40px;
-    margin-bottom: 200px;
+    min-height: 400px;
 }
 
 .slideshow-track {
     display: flex;
-    gap: 20px;
-    padding: 40px 20px;
+    gap: 0;
+    padding: 40px 0;
+    transition: transform 0.8s ease-in-out;
+    width: 600%; /* 6 slides * 100% */
+    will-change: transform;
+    opacity: 0;
+    transition: transform 0.8s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.slideshow-track.loaded {
+    opacity: 1;
+}
+
+/* Loading state */
+.slideshow-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 10;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .slides {
-    min-width: 300px;
-    flex: 0 0 300px;
+    min-width: 100%;
+    flex: 0 0 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .slides:hover {
@@ -400,23 +497,65 @@ html {
 @media (max-width: 900px) {
     .slideshow-container {
         margin: 10px;
+        max-width: 100%;
     }
     
     .slideshow-track {
-        padding: 20px 10px;
-        gap: 15px;
+        padding: 20px 0;
+        width: 600%;
     }
     
     .slides {
-        min-width: 250px;
-        flex: 0 0 250px;
+        min-width: 100%;
+        flex: 0 0 100%;
     }
 }
 
 @media (max-width: 600px) {
+    .slideshow-container {
+        margin: 5px;
+        max-width: 100%;
+    }
+    
+    .slideshow-track {
+        padding: 15px 0;
+        width: 600%;
+    }
+    
     .slides {
-        min-width: 200px;
-        flex: 0 0 200px;
+        min-width: 100%;
+        flex: 0 0 100%;
+    }
+    
+    .slides img {
+        max-width: 180px;
+        height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .slideshow-container {
+        margin: 0;
+        max-width: 100%;
+    }
+    
+    .slideshow-track {
+        padding: 10px 0;
+        width: 600%;
+    }
+    
+    .slides {
+        min-width: 100%;
+        flex: 0 0 100%;
+    }
+    
+    .slides img {
+        max-width: 140px;
+        height: 140px;
+    }
+    
+    .text {
+        font-size: 1rem;
     }
 }
 
@@ -430,6 +569,8 @@ html {
     border-radius: 10px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .slides:hover img {
@@ -498,6 +639,35 @@ html {
     transform: translateY(-50%) scale(0.95);
 }
 
+/* Slide indicators */
+.slide-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 15;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.indicator.active {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+}
+
+.indicator:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
 .fade {
     animation-name: fade;
     animation-duration: 1.5s;
@@ -523,6 +693,7 @@ html {
 .contact {
     background-color: #1a1a1a;
     padding: 80px 20px;
+    margin: 0;
 }
 
 .contact-container {
@@ -620,12 +791,21 @@ html {
 }
 
 @media (max-width: 768px) {
+    .contact {
+        padding: 60px 15px;
+    }
+    
     .contact-container {
         grid-template-columns: 1fr;
+        gap: 30px;
     }
 
     .contact-form {
         margin-top: 30px;
+    }
+    
+    .contact-info h2 {
+        font-size: 2rem;
     }
 }
 
@@ -666,6 +846,7 @@ html {
     color: #e7e7e7;
     padding: 70px 20px 0;
     font-family: "Century Gothic", sans-serif;
+    margin: 0;
 }
 
 .footer-container {
