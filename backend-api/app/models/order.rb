@@ -49,7 +49,6 @@ class Order < ApplicationRecord
           price: item.product.price
         )
         
-        # Update product stock
         item.product.decrement!(:stock, item.quantity)
       end
       

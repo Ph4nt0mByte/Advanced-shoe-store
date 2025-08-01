@@ -23,7 +23,6 @@ end
 RSpec.configure do |config|
   config.include RequestHelpers, type: :request
   
-  # Add request spec type to all specs in spec/requests
   config.define_derived_metadata(file_path: %r{/spec/requests/}) do |metadata|
     metadata[:type] = :request
   end

@@ -32,7 +32,6 @@ function AddProductPage() {
     }
   };
 
-  // Check if user is authenticated
   const navigate = useNavigate();
   
   useEffect(() => {

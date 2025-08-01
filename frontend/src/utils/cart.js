@@ -2,7 +2,6 @@
 let cartItems = [];
 const subscribers = [];
 
-// Load cart from localStorage
 function loadCart() {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
@@ -11,16 +10,13 @@ function loadCart() {
     notifySubscribers();
 }
 
-// Save cart to localStorage
 function saveCart() {
     localStorage.setItem('cart', JSON.stringify(cartItems));
     notifySubscribers();
 }
 
-// Subscribe to cart changes
 export function subscribe(callback) {
     subscribers.push(callback);
-    // Return unsubscribe function
     return () => {
         const index = subscribers.indexOf(callback);
         if (index > -1) {
@@ -29,17 +25,14 @@ export function subscribe(callback) {
     };
 }
 
-// Notify all subscribers of cart changes
 function notifySubscribers() {
     subscribers.forEach(callback => callback(cartItems));
 }
 
-// Get current cart items
 export function getCartItems() {
     return [...cartItems];
 }
 
-// Add item to cart
 export function addToCart(item) {
     const existingItem = cartItems.find(i => i.id === item.id && i.size === item.size);
     
@@ -56,7 +49,6 @@ export function addToCart(item) {
     return getCartItems();
 }
 
-// Update item quantity
 export function updateQuantity(itemId, newQuantity, size) {
     const item = cartItems.find(i => i.id === itemId && (!size || i.size === size));
     
@@ -68,7 +60,6 @@ export function updateQuantity(itemId, newQuantity, size) {
     return getCartItems();
 }
 
-// Change item quantity by delta
 export function changeQuantity(itemId, change, size) {
     const item = cartItems.find(i => i.id === itemId && (!size || i.size === size));
     
@@ -80,7 +71,6 @@ export function changeQuantity(itemId, change, size) {
     return getCartItems();
 }
 
-// Remove item from cart
 export function removeItem(itemId, size) {
     const itemIndex = cartItems.findIndex(i => i.id === itemId && (!size || i.size === size));
     
@@ -92,17 +82,15 @@ export function removeItem(itemId, size) {
     return getCartItems();
 }
 
-// Clear the cart
 export function clearCart() {
     cartItems = [];
     saveCart();
     return [];
 }
 
-// Calculate order summary
 export function getOrderSummary() {
     const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    const tax = subtotal * 0.08; // 8% tax
+    const tax = subtotal * 0.08;
     const total = subtotal + tax;
     const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
     
@@ -114,10 +102,8 @@ export function getOrderSummary() {
     };
 }
 
-// Get cart item count
 export function getCartItemCount() {
     return cartItems.reduce((count, item) => count + item.quantity, 0);
 }
 
-// Initialize cart
 loadCart();

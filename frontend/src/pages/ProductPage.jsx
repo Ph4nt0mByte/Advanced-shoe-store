@@ -5,7 +5,6 @@ import '../styles/ProductPage.css';
 import '../pages/HomePage';
 
 function ProductPage() {
-  // State management
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -15,26 +14,21 @@ function ProductPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
 
-  // Filter states
   const [brandFilter, setBrandFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [priceFilter, setPriceFilter] = useState('');
 
-  // Modal image state
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Load products on component mount
   useEffect(() => {
     loadProducts();
     updateCartCount();
   }, []);
 
-  // Apply filters when filter states change
   useEffect(() => {
     applyFilters();
   }, [brandFilter, categoryFilter, priceFilter, products]);
 
-  // Load products from backend
   const loadProducts = async () => {
     try {
       const response = await fetch('http://localhost:3000/api/v1/products');
@@ -43,10 +37,9 @@ function ProductPage() {
       }
       
       const data = await response.json();
-      console.log('Raw API response:', data); // Debug log
+      console.log('Raw API response:', data);
       
       const processedProducts = data.map((product) => {
-        // Debug log to see what fields are available
         console.log('Product data:', {
           id: product.id,
           name: product.name,
@@ -55,7 +48,6 @@ function ProductPage() {
           allFields: Object.keys(product)
         });
         
-        // Try to find the image URL in common field names
         const imageUrl = product.image || 
                         product.image_url || 
                         product.images?.[0] || 
@@ -79,12 +71,10 @@ function ProductPage() {
       setFilteredProducts(processedProducts);
     } catch (error) {
       console.error('Error loading products:', error);
-      // Show error to user
       alert('Failed to load products. Please try again later.');
     }
   };
 
-  // Apply filters
   const applyFilters = () => {
     let filtered = [...products];
 
@@ -109,7 +99,6 @@ function ProductPage() {
     setFilteredProducts(filtered);
   };
 
-  // Open product modal
   const openModal = (product) => {
     setSelectedProduct(product);
     setSelectedSize(null);
@@ -119,7 +108,6 @@ function ProductPage() {
     document.body.style.overflow = 'hidden';
   };
 
-  // Close modal
   const closeModal = () => {
     setModalActive(false);
     setSelectedProduct(null);
@@ -128,22 +116,18 @@ function ProductPage() {
     document.body.style.overflow = '';
   };
 
-  // Change main image
   const changeMainImage = (imageSrc, index) => {
     setCurrentImageIndex(index);
   };
 
-  // Select size
   const selectSize = (size) => {
     setSelectedSize(size);
   };
 
-  // Select color
   const selectColor = (color) => {
     setSelectedColor(color);
   };
 
-  // Add to cart
   const handleAddToCart = () => {
     if (!selectedSize) {
       alert('Please select a size');
@@ -171,12 +155,10 @@ function ProductPage() {
     alert('Item added to cart!');
   };
 
-  // Update cart count
   const updateCartCount = () => {
     setCartCount(getCartItemCount());
   };
 
-  // Buy now
   const buyNow = () => {
     if (!selectedSize) {
       alert('Please select a size');
@@ -203,11 +185,9 @@ function ProductPage() {
     addToCart(item);
     updateCartCount();
     
-    // Navigate to cart page
     window.location.href = '/cart';
   };
 
-  // Toggle mobile menu
   const toggleMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
     if (!mobileMenuOpen) {
@@ -217,14 +197,12 @@ function ProductPage() {
     }
   };
 
-  // Handle modal overlay click
   const handleModalOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       closeModal();
     }
   };
 
-  // Handle escape key
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
@@ -238,7 +216,6 @@ function ProductPage() {
 
   return (
     <div className="product-page">
-      {/* Navigation */}
       <div className="navigation">
         <div className="navbar">
           <div className="nav-left">
@@ -278,7 +255,6 @@ function ProductPage() {
         </div>
       </div>
 
-      {/* Products Section */}
       <section className="products-section">
         <div className="products-container">
           <h1 className="products-title">Products</h1>
@@ -337,7 +313,7 @@ function ProductPage() {
                     alt={product.name} 
                     onError={(e) => {
                       console.error('Error loading image:', product.images[0]);
-                      e.target.onerror = null; // Prevent infinite loop if placeholder also fails
+                      e.target.onerror = null;
                       e.target.src = `https://via.placeholder.com/250x200?text=${encodeURIComponent(product.name)}`;
                     }}
                     style={{ 
@@ -359,7 +335,6 @@ function ProductPage() {
         </div>
       </section>
 
-      {/* Product Modal */}
       {modalActive && selectedProduct && (
         <div className={`modal-overlay ${modalActive ? 'active' : ''}`} onClick={handleModalOverlayClick}>
           <div className="modal-content">
@@ -442,7 +417,6 @@ function ProductPage() {
         </div>
       )}
 
-      {/* Footer */}
       <footer className="footer" id="footer-section">
         <div className="footer-container">
           <div className="footer-logo">

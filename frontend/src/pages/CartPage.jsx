@@ -15,19 +15,15 @@ function CartPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [orderSummary, setOrderSummary] = useState(getOrderSummary());
 
-  // Initialize and subscribe to cart changes
   useEffect(() => {
-    // Initial load
     setCartItems([...getCartItems()]);
     setOrderSummary(getOrderSummary());
     
-    // Subscribe to future changes
     const unsubscribe = subscribe((updatedCart) => {
       setCartItems([...updatedCart]);
       setOrderSummary(getOrderSummary());
     });
     
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
@@ -45,7 +41,6 @@ function CartPage() {
 
   const handleCheckout = () => {
     if (cartItems.length > 0) {
-      // Navigate to checkout page
       window.location.href = '/checkout';
     } else {
       alert('Your cart is empty. Add some items before checking out.');

@@ -121,8 +121,6 @@ function EditProductPage() {
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
-      // In a real app, you would upload the file to a server here
-      // and then set the image URL in the form
     }
   };
 
@@ -189,7 +187,6 @@ function EditProductPage() {
           
           <form onSubmit={handleSubmit}>
             <div className="row">
-              {/* Left Column - Image Upload */}
               <div className="col-md-5 mb-4">
                 <div className="border rounded p-3 text-center" style={{ minHeight: '300px' }}>
                   {imagePreview ? (
@@ -236,7 +233,6 @@ function EditProductPage() {
                 </div>
               </div>
               
-              {/* Right Column - Form Fields */}
               <div className="col-md-7">
                 <div className="mb-3">
                   <label htmlFor="name" className="form-label">

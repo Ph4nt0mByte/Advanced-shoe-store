@@ -3,18 +3,15 @@ module Api
     class OrdersController < ApplicationController
       before_action :set_order, only: [:show, :cancel]
 
-      # GET /api/v1/orders
       def index
         @orders = current_user.orders.includes(order_items: :product).order(created_at: :desc)
         render json: @orders, include: { order_items: { include: :product } }
       end
 
-      # GET /api/v1/orders/:id
       def show
         render json: @order, include: { order_items: { include: :product } }
       end
 
-      # POST /api/v1/orders
       def create
         cart = current_user.cart
         
@@ -37,7 +34,6 @@ module Api
               price: item.product.price
             )
             
-            # Update product stock
             item.product.decrement!(:stock, item.quantity)
           end
           
@@ -51,7 +47,6 @@ module Api
         render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
       end
 
-      # PATCH /api/v1/orders/:id/cancel
       def cancel
         if @order.may_cancel?
           @order.cancel!

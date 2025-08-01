@@ -7,7 +7,6 @@ function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   
-  // Use refs for values that change frequently to avoid stale closures
   const scrollPositionRef = useRef(0);
   const scrollSpeedRef = useRef(0.5);
   const slideWidthRef = useRef(320);
@@ -20,7 +19,6 @@ function HomePage() {
   const toggleMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
     
-    // Handle body overflow like in original JS
     if (!mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -28,7 +26,6 @@ function HomePage() {
     }
   };
 
-  // Calculate slide width based on container width
   const calculateSlideWidth = () => {
     if (!slideshowRef.current) return;
     
@@ -42,7 +39,6 @@ function HomePage() {
     }
   };
 
-  // Update scroll position for infinite scroll
   const updateScrollPosition = () => {
     if (!trackRef.current || !isScrolling) return;
     
@@ -60,14 +56,12 @@ function HomePage() {
     animationRef.current = requestAnimationFrame(updateScrollPosition);
   };
 
-  // Start infinite scroll
   const startInfiniteScroll = () => {
     if (isScrolling) return;
     setIsScrolling(true);
     updateScrollPosition();
   };
 
-  // Stop infinite scroll
   const stopInfiniteScroll = () => {
     setIsScrolling(false);
     if (animationRef.current) {
@@ -77,27 +71,23 @@ function HomePage() {
 
 
 
-  // Handle slide navigation
   const plusSlides = (n) => {
     if (!trackRef.current) return;
     
     const currentPosition = scrollPositionRef.current;
     const slideWidth = slideWidthRef.current;
-    const gap = 20; // Gap between slides
+    const gap = 20;
     const moveDistance = slideWidth + gap;
     
     if (n > 0) {
-      // Move right (next)
       scrollPositionRef.current = currentPosition - moveDistance;
     } else {
-      // Move left (previous)
       scrollPositionRef.current = currentPosition + moveDistance;
     }
     
     trackRef.current.style.transform = `translateX(${scrollPositionRef.current}px)`;
   };
 
-  // Touch handling for mobile
   const [touchStartX, setTouchStartX] = useState(0);
   const [touchEndX, setTouchEndX] = useState(0);
 
@@ -115,7 +105,6 @@ function HomePage() {
     const diff = touchStartX - touchEndX;
     
     if (Math.abs(diff) > swipeThreshold) {
-      // Use the same logic as plusSlides
       if (!trackRef.current) return;
       
       const currentPosition = scrollPositionRef.current;
@@ -124,10 +113,8 @@ function HomePage() {
       const moveDistance = slideWidth + gap;
       
       if (diff > 0) {
-        // Swipe left - move right (next)
         scrollPositionRef.current = currentPosition - moveDistance;
       } else {
-        // Swipe right - move left (previous)
         scrollPositionRef.current = currentPosition + moveDistance;
       }
       
@@ -135,22 +122,18 @@ function HomePage() {
     }
   };
 
-  // Handle resize
   const handleResize = () => {
     calculateSlideWidth();
   };
 
-  // Initialize slideshow
   useEffect(() => {
     const initSlideshow = () => {
       calculateSlideWidth();
-      // Start scrolling after a short delay
       setTimeout(() => {
         startInfiniteScroll();
       }, 500);
     };
 
-    // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
       initSlideshow();
     }, 100);
@@ -163,13 +146,11 @@ function HomePage() {
     };
   }, []);
 
-  // Handle resize events
   useEffect(() => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (animationRef.current) {
@@ -272,7 +253,6 @@ function HomePage() {
               <img src="https://cdn-images.farfetch-contents.com/30/61/77/58/30617758_59699763_1000.jpg" alt="Nike" />
               <div className="text">NIKE</div>
             </div>
-            {/* Duplicate slides for infinite scroll */}
             <div className="slides">
               <img src="https://cdn-images.farfetch-contents.com/22/19/20/86/22192086_51955423_1000.jpg" alt="Jordan" />
               <div className="text">JORDAN</div>

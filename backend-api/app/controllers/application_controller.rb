@@ -19,7 +19,6 @@ class ApplicationController < ActionController::API
         decoded = JWT.decode(token, Rails.application.credentials.secret_key_base, true, { algorithm: 'HS256' })
         Rails.logger.info "Token decoded successfully. Payload: #{decoded.first.inspect}"
         
-        # Handle both 'user_id' and 'id' in the token payload
         user_id = decoded.first['user_id'] || decoded.first['id']
         Rails.logger.info "Looking for user with ID: #{user_id}"
         

@@ -38,7 +38,6 @@ const LoginPage = () => {
       const data = await response.json();
       localStorage.setItem('token', data.token);
       
-      // Check if user is admin and redirect accordingly
       if (data.user && data.user.admin) {
         localStorage.setItem('isAdmin', 'true');
         navigate('/admin');
@@ -62,7 +61,6 @@ const LoginPage = () => {
     }
     
     try {
-      // Replace with your actual registration API call
       const response = await fetch('http://localhost:3000/api/v1/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

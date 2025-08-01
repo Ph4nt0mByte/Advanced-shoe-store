@@ -24,7 +24,6 @@ function CheckoutPage() {
 
   return (
     <>
-      {/* ---------- Navigation ---------- */}
       <div className="navigation">
         <div className="navbar">
           <div className="nav-left">
@@ -55,7 +54,7 @@ function CheckoutPage() {
             <li><a href="/#contact-section" onClick={toggleMenu}>Contact</a></li>
           </ul>
         </div>
-      </div> {/* close .navigation */}
+      </div>
 
       <main className="checkout-main">
         <div className="checkout-container">

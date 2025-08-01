@@ -10,7 +10,6 @@ import CheckoutPage from './pages/checkout';
 import Homepage from './pages/HomePage';
 import './styles/App.css';
 
-// Simple route guard
 const isAuthenticated = () => {
   return !!localStorage.getItem('token');
 };

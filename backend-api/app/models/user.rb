@@ -8,7 +8,6 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password_digest, presence: true, length: { minimum: 6 }, allow_nil: true
   
-  # Returns the user's current active cart or creates a new one
   def cart
     carts.last || carts.create
   end

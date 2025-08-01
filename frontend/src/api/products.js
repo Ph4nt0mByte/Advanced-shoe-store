@@ -1,7 +1,3 @@
-// src/api/products.js
-// Simple wrapper around fetch for product CRUD operations.
-// Base URL can be configured via Vite env: VITE_API_URL, otherwise defaults to localhost.
-
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 const defaultHeaders = () => {

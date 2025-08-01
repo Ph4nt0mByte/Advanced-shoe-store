@@ -15,7 +15,6 @@ function AdminPage() {
     navigate('/');
   };
 
-  // Redirect to home if not admin
   if (!isAdmin) {
     return <Navigate to="/" replace />;
   }
@@ -32,7 +31,6 @@ function AdminPage() {
         console.log('Admin - Raw API response:', data);
         
         const processedProducts = data.map((product) => {
-          // Try to find the image URL in common field names
           const imageUrl = product.image || 
                           product.image_url || 
                           product.images?.[0] || 
@@ -40,7 +38,7 @@ function AdminPage() {
           
           return {
             ...product,
-            imageUrl: imageUrl,  // Add the resolved image URL
+            imageUrl: imageUrl,
             price: parseFloat(product.price) || 0,
             brand: product.brand || 'other',
             category: product.category || 'uncategorized'
@@ -77,10 +75,8 @@ function AdminPage() {
           throw new Error(errorData.errors ? errorData.errors[0] : 'Failed to delete product');
         }
 
-        // Remove the product from the list since it's now soft deleted
         setProducts(products.filter(product => product.id !== id));
         
-        // Show success message
         alert('Product has been moved to deleted items.');
       } catch (err) {
         setError(err.message);
@@ -149,7 +145,7 @@ function AdminPage() {
                       alt={product.name}
                       onError={(e) => {
                         console.error('Error loading image:', product.imageUrl);
-                        e.target.onerror = null; // Prevent infinite loop
+                        e.target.onerror = null;
                         e.target.src = `https://via.placeholder.com/50?text=${encodeURIComponent(product.name.substring(0, 2))}`;
                       }}
                       style={{

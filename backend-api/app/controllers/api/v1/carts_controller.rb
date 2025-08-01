@@ -4,12 +4,10 @@ module Api
       before_action :set_cart, only: [:show]
       before_action :set_cart_for_items, only: [:add_item, :update_item, :remove_item, :clear]
 
-      # GET /api/v1/cart
       def show
         render json: @cart, include: { cart_items: { include: :product } }
       end
 
-      # POST /api/v1/cart/items
       def add_item
         @cart_item = @cart.cart_items.find_or_initialize_by(product_id: cart_item_params[:product_id])
         
@@ -26,7 +24,6 @@ module Api
         end
       end
 
-      # PATCH /api/v1/cart/items/:id
       def update_item
         @cart_item = @cart.cart_items.find_by(id: params[:id])
         
@@ -37,7 +34,6 @@ module Api
         end
       end
 
-      # DELETE /api/v1/cart/items/:id
       def remove_item
         @cart_item = @cart.cart_items.find_by(id: params[:id])
         
@@ -48,7 +44,6 @@ module Api
         end
       end
 
-      # DELETE /api/v1/cart/clear
       def clear
         @cart.cart_items.destroy_all
         
