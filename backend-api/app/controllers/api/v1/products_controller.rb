@@ -20,21 +20,29 @@ module Api
           if @product.save
             render json: @product, status: :created
           else
-            render json: @product.errors, status: :unprocessable_entity
+            render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
           end
+        rescue ActionController::ParameterMissing => e
+          render json: { error: e.message }, status: :bad_request
         end
   
         def update
           if @product.update(product_params)
             render json: @product
           else
-            render json: @product.errors, status: :unprocessable_entity
+            render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
           end
+        rescue ActionController::ParameterMissing => e
+          render json: { error: e.message }, status: :bad_request
         end
   
         def destroy
-          @product.destroy
-          head :no_content
+          if @product.order_items.any?
+            render json: { errors: ['Cannot delete product with existing orders'] }, status: :unprocessable_entity
+          else
+            @product.destroy
+            head :no_content
+          end
         end
   
         private

@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       post 'auth/login', to: 'auth#login'
       post 'auth/register', to: 'auth#register'
+      get 'auth/me', to: 'auth#me'
       
       resources :products, only: [:index, :show, :create, :update, :destroy]
       
