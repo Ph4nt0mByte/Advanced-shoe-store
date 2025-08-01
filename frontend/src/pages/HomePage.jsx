@@ -6,6 +6,68 @@ import { initSlideshow } from '../utils/home.js';
 function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [formStatus, setFormStatus] = useState({ success: null, message: '' });
+  
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormStatus({ success: null, message: 'Sending message...' });
+    
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: {
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject,
+            message: formData.message
+          }
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setFormStatus({ success: true, message: 'Message sent successfully!' });
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        setFormStatus({ 
+          success: false, 
+          message: data.errors ? data.errors.join(', ') : 'Failed to send message. Please try again.' 
+        });
+      }
+    } catch (error) {
+      setFormStatus({ 
+        success: false, 
+        message: 'An error occurred. Please try again later.' 
+      });
+    }
+  };
   
   const scrollPositionRef = useRef(0);
   const scrollSpeedRef = useRef(0.5);
@@ -318,20 +380,54 @@ function HomePage() {
           
           <div className="contact-form">
             <h3>Send us a message</h3>
-            <form onSubmit={(e) => e.preventDefault()}>
+            {formStatus.message && (
+              <div className={`form-message ${formStatus.success ? 'success' : 'error'}`}>
+                {formStatus.message}
+              </div>
+            )}
+            <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <input type="text" placeholder="Your Name" required />
+                <input 
+                  type="text" 
+                  name="name"
+                  placeholder="Your Name" 
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required 
+                />
               </div>
               <div className="form-group">
-                <input type="email" placeholder="Your Email" required />
+                <input 
+                  type="email" 
+                  name="email"
+                  placeholder="Your Email" 
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required 
+                />
               </div>
               <div className="form-group">
-                <input type="text" placeholder="Subject" />
+                <input 
+                  type="text" 
+                  name="subject"
+                  placeholder="Subject" 
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                />
               </div>
               <div className="form-group">
-                <textarea placeholder="Your Message" rows="4" required></textarea>
+                <textarea 
+                  name="message"
+                  placeholder="Your Message" 
+                  rows="4" 
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                ></textarea>
               </div>
-              <button type="submit" className="submit-btn">Send Message</button>
+              <button type="submit" className="submit-btn" disabled={formStatus.message === 'Sending message...'}>
+                {formStatus.message === 'Sending message...' ? 'Sending...' : 'Send Message'}
+              </button>
             </form>
           </div>
         </div>
