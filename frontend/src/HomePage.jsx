@@ -1,38 +1,182 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import './HomePage.css';
 
 function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isScrolling, setIsScrolling] = useState(false);
+  
+  // Use refs for values that change frequently to avoid stale closures
+  const scrollPositionRef = useRef(0);
+  const scrollSpeedRef = useRef(0.5);
+  const slideWidthRef = useRef(320);
+  const totalSlidesRef = useRef(6);
+  
+  const slideshowRef = useRef(null);
+  const trackRef = useRef(null);
+  const animationRef = useRef(null);
 
   const toggleMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+    
+    // Handle body overflow like in original JS
+    if (!mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
   };
 
+  // Calculate slide width based on container width
+  const calculateSlideWidth = () => {
+    if (!slideshowRef.current) return;
+    
+    const containerWidth = slideshowRef.current.offsetWidth;
+    if (containerWidth <= 600) {
+      slideWidthRef.current = 240;
+    } else if (containerWidth <= 900) {
+      slideWidthRef.current = 290;
+    } else {
+      slideWidthRef.current = 320;
+    }
+  };
+
+  // Update scroll position for infinite scroll
+  const updateScrollPosition = () => {
+    if (!trackRef.current || !isScrolling) return;
+    
+    const newPosition = scrollPositionRef.current - scrollSpeedRef.current;
+    const resetPoint = -(totalSlidesRef.current * slideWidthRef.current);
+    
+    if (newPosition <= resetPoint) {
+      scrollPositionRef.current = 0;
+    } else {
+      scrollPositionRef.current = newPosition;
+    }
+    
+    trackRef.current.style.transform = `translateX(${scrollPositionRef.current}px)`;
+    
+    animationRef.current = requestAnimationFrame(updateScrollPosition);
+  };
+
+  // Start infinite scroll
+  const startInfiniteScroll = () => {
+    if (isScrolling) return;
+    setIsScrolling(true);
+    updateScrollPosition();
+  };
+
+  // Stop infinite scroll
+  const stopInfiniteScroll = () => {
+    setIsScrolling(false);
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  };
+
+
+
+  // Handle slide navigation
   const plusSlides = (n) => {
-    setCurrentSlide(prev => {
-      const totalSlides = 6; // Number of slides
-      let newSlide = prev + n;
+    if (!trackRef.current) return;
+    
+    const currentPosition = scrollPositionRef.current;
+    const slideWidth = slideWidthRef.current;
+    const gap = 20; // Gap between slides
+    const moveDistance = slideWidth + gap;
+    
+    if (n > 0) {
+      // Move right (next)
+      scrollPositionRef.current = currentPosition - moveDistance;
+    } else {
+      // Move left (previous)
+      scrollPositionRef.current = currentPosition + moveDistance;
+    }
+    
+    trackRef.current.style.transform = `translateX(${scrollPositionRef.current}px)`;
+  };
+
+  // Touch handling for mobile
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchEndX, setTouchEndX] = useState(0);
+
+  const handleTouchStart = (e) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e) => {
+    setTouchEndX(e.changedTouches[0].clientX);
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      // Use the same logic as plusSlides
+      if (!trackRef.current) return;
       
-      // Handle circular navigation
-      if (newSlide >= totalSlides) {
-        newSlide = 0;
-      } else if (newSlide < 0) {
-        newSlide = totalSlides - 1;
+      const currentPosition = scrollPositionRef.current;
+      const slideWidth = slideWidthRef.current;
+      const gap = 20;
+      const moveDistance = slideWidth + gap;
+      
+      if (diff > 0) {
+        // Swipe left - move right (next)
+        scrollPositionRef.current = currentPosition - moveDistance;
+      } else {
+        // Swipe right - move left (previous)
+        scrollPositionRef.current = currentPosition + moveDistance;
       }
       
-      return newSlide;
-    });
+      trackRef.current.style.transform = `translateX(${scrollPositionRef.current}px)`;
+    }
   };
 
-  // Auto-advance slideshow
-  useEffect(() => {
-    const interval = setInterval(() => {
-      plusSlides(1);
-    }, 5000); // Change slide every 5 seconds
+  // Handle resize
+  const handleResize = () => {
+    calculateSlideWidth();
+  };
 
-    return () => clearInterval(interval);
-  }, [currentSlide]);
+  // Initialize slideshow
+  useEffect(() => {
+    const initSlideshow = () => {
+      calculateSlideWidth();
+      // Start scrolling after a short delay
+      setTimeout(() => {
+        startInfiniteScroll();
+      }, 500);
+    };
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      initSlideshow();
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
+
+  // Handle resize events
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      document.body.style.overflow = '';
+    };
+  }, []);
 
   return (
     <div className="home-page">
@@ -44,21 +188,23 @@ function HomePage() {
         <div className="navigation">
           <div className="navbar">
             <div className="nav-left">
-              <a href="../products_page/products.html" className="nav-link">PRODUCTS</a>
+              <Link to="/products" className="nav-link">PRODUCTS</Link>
               <a href="#featured-section" className="nav-link">FEATURED</a>
               <a href="#footer-section" className="nav-link">ABOUT US</a>
             </div>
             
             <div className="nav-center">
-              <img src="/homepage/img/logo.png" alt="SHODES" className="logo" />
+              <Link to="/">
+                <img src="/homepage/img/logo.png" alt="SHODES" className="logo" />
+              </Link>
             </div>
             
             <div className="nav-right">
               <a href="#contact-section" className="nav-link">CONTACT</a>
-              <a href="../cart_page/cart.html" className="cart-icon">
+              <Link to="/cart" className="cart-icon">
                 <img src="/homepage/img/cart.svg" alt="Shopping Cart" className="cart-img" />
                 <span className="cart-count" id="cartCount">0</span>
-              </a>
+              </Link>
             </div>
           </div>
       
@@ -70,7 +216,7 @@ function HomePage() {
               <i className="fas fa-times"></i>
             </span>
             <ul>
-              <li><a href="../products_page/products.html">Products</a></li>
+              <li><Link to="/products">Products</Link></li>
               <li><a href="#featured-section">Featured</a></li>
               <li><a href="#footer-section">About Us</a></li>
               <li><a href="#contact-section">Contact</a></li>
@@ -91,8 +237,41 @@ function HomePage() {
         <div className="featured-header"> 
           <h2>Featured Collection</h2>
         </div>
-        <div className="slideshow-container">
-          <div className="slideshow-track" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+        <div 
+          className="slideshow-container" 
+          ref={slideshowRef}
+          onMouseEnter={stopInfiniteScroll}
+          onMouseLeave={startInfiniteScroll}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+
+        >
+          <div className="slideshow-track" ref={trackRef}>
+            <div className="slides">
+              <img src="https://cdn-images.farfetch-contents.com/22/19/20/86/22192086_51955423_1000.jpg" alt="Jordan" />
+              <div className="text">JORDAN</div>
+            </div>
+            <div className="slides">
+              <img src="https://cdn-images.farfetch-contents.com/20/49/94/58/20499458_50484173_1000.jpg" alt="Amiri" />
+              <div className="text">AMIRI</div>
+            </div>
+            <div className="slides">
+              <img src="https://cdn-images.farfetch-contents.com/30/04/81/66/30048166_59098074_1000.jpg" alt="Salomon" />
+              <div className="text">SALOMON</div>
+            </div>
+            <div className="slides">
+              <img src="https://cdn-images.farfetch-contents.com/26/08/27/43/26082743_57501365_1000.jpg" alt="Jimmy Choo" />
+              <div className="text">JIMMY CHOO</div>
+            </div>
+            <div className="slides">
+              <img src="https://cdn-images.farfetch-contents.com/30/57/10/11/30571011_59670238_1000.jpg" alt="Amiri" />
+              <div className="text">AMIRI</div>
+            </div>
+            <div className="slides">
+              <img src="https://cdn-images.farfetch-contents.com/30/61/77/58/30617758_59699763_1000.jpg" alt="Nike" />
+              <div className="text">NIKE</div>
+            </div>
+            {/* Duplicate slides for infinite scroll */}
             <div className="slides">
               <img src="https://cdn-images.farfetch-contents.com/22/19/20/86/22192086_51955423_1000.jpg" alt="Jordan" />
               <div className="text">JORDAN</div>
@@ -120,6 +299,8 @@ function HomePage() {
           </div>
           <a className="prev" onClick={() => plusSlides(-1)}>&#10094;</a>
           <a className="next" onClick={() => plusSlides(1)}>&#10095;</a>
+          
+
         </div>
       </section>
 
