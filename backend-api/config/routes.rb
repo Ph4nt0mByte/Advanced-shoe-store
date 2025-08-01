@@ -18,6 +18,8 @@ Rails.application.routes.draw do
         get 'deleted', on: :collection
       end
       
+      resources :messages, only: [:create]
+      
       # Cart routes
       resource :cart, only: [:show] do
         post 'items', to: 'carts#add_item'
