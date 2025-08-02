@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import './ProductPage.css';
+import { addToCart, getCartItemCount } from '../utils/cart';
+import '../styles/ProductPage.css';
 
 function ProductPage() {
   // State management
@@ -167,7 +168,7 @@ function ProductPage() {
   };
 
   // Add to cart
-  const addToCart = () => {
+  const handleAddToCart = () => {
     if (!selectedSize) {
       alert('Please select a size');
       return;
@@ -189,20 +190,14 @@ function ProductPage() {
       quantity: 1
     };
 
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existingItemIndex = cart.findIndex(cartItem => 
-      cartItem.id === item.id && cartItem.size === item.size && cartItem.color === item.color
-    );
-
-    if (existingItemIndex > -1) {
-      cart[existingItemIndex].quantity += 1;
-    } else {
-      cart.push(item);
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
+    addToCart(item);
     updateCartCount();
-    closeModal();
+    alert('Item added to cart!');
+  };
+
+  // Update cart count
+  const updateCartCount = () => {
+    setCartCount(getCartItemCount());
   };
 
   // Buy now
@@ -217,16 +212,23 @@ function ProductPage() {
       return;
     }
 
-    addToCart();
-    // Navigate to cart page (you'll need to implement routing)
-    window.location.href = '/cart';
-  };
+    // Add the item to cart
+    const item = {
+      id: selectedProduct.id,
+      name: selectedProduct.name,
+      brand: selectedProduct.brand,
+      price: selectedProduct.price,
+      size: selectedSize,
+      color: selectedColor,
+      image: selectedProduct.images[0],
+      quantity: 1
+    };
 
-  // Update cart count
-  const updateCartCount = () => {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-    setCartCount(totalItems);
+    addToCart(item);
+    updateCartCount();
+    
+    // Navigate to cart page
+    window.location.href = '/cart';
   };
 
   // Toggle mobile menu
@@ -443,7 +445,7 @@ function ProductPage() {
                 </div>
                 
                 <div className="modal-actions">
-                  <button className="add-to-cart-btn" onClick={addToCart}>
+                  <button className="add-to-cart-btn" onClick={handleAddToCart}>
                     Add to Cart
                   </button>
                   <button className="buy-now-btn" onClick={buyNow}>

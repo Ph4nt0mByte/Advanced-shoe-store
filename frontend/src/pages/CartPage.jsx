@@ -1,45 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './CartPage.css';
+import '../styles/CartPage.css';
+import { 
+  getCartItems,
+  changeQuantity,
+  removeItem,
+  getOrderSummary,
+  subscribe
+} from '../utils/cart';
 
 function CartPage() {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(getCartItems());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [orderSummary, setOrderSummary] = useState(getOrderSummary());
 
+  // Initialize and subscribe to cart changes
   useEffect(() => {
-    // Load cart items from localStorage on component mount
-    const savedCart = JSON.parse(localStorage.getItem('cart') || '[]');
-    setCartItems(savedCart);
+    // Initial load
+    setCartItems([...getCartItems()]);
+    setOrderSummary(getOrderSummary());
+    
+    // Subscribe to future changes
+    const unsubscribe = subscribe((updatedCart) => {
+      setCartItems([...updatedCart]);
+      setOrderSummary(getOrderSummary());
+    });
+    
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, []);
 
-  const changeQuantity = (itemIndex, change) => {
-    setCartItems(prevItems => {
-      const updatedItems = [...prevItems];
-      const item = updatedItems[itemIndex];
-      if (item) {
-        const newQuantity = item.quantity + change;
-        updatedItems[itemIndex] = { ...item, quantity: newQuantity < 1 ? 1 : newQuantity };
-      }
-      
-      localStorage.setItem('cart', JSON.stringify(updatedItems));
-      return updatedItems;
-    });
+  const handleQuantityChange = (itemId, change, size) => {
+    changeQuantity(itemId, change, size);
   };
 
-  const removeItem = (itemIndex) => {
-    setCartItems(prevItems => {
-      const updatedItems = prevItems.filter((_, index) => index !== itemIndex);
-      localStorage.setItem('cart', JSON.stringify(updatedItems));
-      return updatedItems;
-    });
-  };
-
-  const updateOrderSummary = () => {
-    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    const tax = subtotal * 0.08;
-    const total = subtotal + tax;
-
-    return { subtotal, tax, total };
+  const handleRemoveItem = (itemId, size) => {
+    removeItem(itemId, size);
   };
 
   const toggleMenu = () => {
@@ -48,13 +44,14 @@ function CartPage() {
 
   const handleCheckout = () => {
     if (cartItems.length > 0) {
+      // Navigate to checkout page
       window.location.href = '/checkout';
     } else {
       alert('Your cart is empty. Add some items before checking out.');
     }
   };
 
-  const { subtotal, tax, total } = updateOrderSummary();
+  const { subtotal, tax, total } = orderSummary;
 
   const displayEmptyCart = () => (
     <div className="empty-cart">
@@ -70,7 +67,7 @@ function CartPage() {
     }
 
     return cartItems.map((item, index) => (
-      <div key={`${item.id}-${item.size}-${item.color}-${index}`} className="cart-item" data-item-id={index}>
+      <div key={`${item.id}-${item.size}-${index}`} className="cart-item">
         <div className="item-image">
           <img src={item.image} alt={item.name} />
         </div>
@@ -83,26 +80,26 @@ function CartPage() {
         <div className="item-quantity">
           <button 
             className="qty-btn minus" 
-            onClick={() => changeQuantity(index, -1)}
+            onClick={() => handleQuantityChange(item.id, -1, item.size)}
           >
             -
           </button>
-          <span className="qty-display" id={`qty-${index}`}>
+          <span className="qty-display">
             {item.quantity}
           </span>
           <button 
             className="qty-btn plus" 
-            onClick={() => changeQuantity(index, 1)}
+            onClick={() => handleQuantityChange(item.id, 1, item.size)}
           >
             +
           </button>
         </div>
         <div className="item-price">
-          <span className="price">${item.price.toFixed(2)}</span>
+          <span className="price">${(item.price * item.quantity).toFixed(2)}</span>
         </div>
         <button 
           className="remove-btn" 
-          onClick={() => removeItem(index)}
+          onClick={() => handleRemoveItem(item.id, item.size)}
         >
           ×
         </button>
@@ -112,7 +109,6 @@ function CartPage() {
 
   return (
     <div className="cart-page">
-      <section className="header" id="header-section">
         <div className="navigation">
           <div className="navbar">
             <div className="nav-left">
@@ -149,7 +145,6 @@ function CartPage() {
             </ul>
           </div>
         </div>
-      </section>
 
       <main className="cart-main">
         <div className="cart-container">

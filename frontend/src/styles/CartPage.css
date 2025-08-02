@@ -1,25 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap');
+/* Global Styles */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
 
-/* CSS Reset - Remove all default margins and padding */
-* {
+body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    background-color: #131313 !important;
-    max-width: none !important;
-    overflow-x: visible !important;
-}
-
-.cart-page {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
+    width: 100%;
 }
 
 /* Smooth scrolling */
@@ -27,16 +16,9 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Header section */
-.header {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
 /* navigation section */
-.navigation{
-    position: absolute;
+.navigation {
+    position: relative;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -444,9 +426,10 @@ html {
 .cart-main {
     min-height: 100vh;
     background-color: #1a1a1a;
-    padding: 120px 20px 40px;
+    padding: 60px 20px 40px; /* Reduced top padding from 120px to 60px */
     color: white;
     font-family: "Century Gothic", sans-serif;
+    margin-top: 0; /* Ensure no additional margin */
 }
 
 .cart-container {

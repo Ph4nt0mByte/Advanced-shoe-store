@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import './HomePage.css';
+import '../styles/HomePage.css';
+import { initSlideshow } from '../utils/home.js';
 
 function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
